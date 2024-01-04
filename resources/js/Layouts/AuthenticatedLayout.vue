@@ -32,6 +32,7 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
+                                <NavLink :href="route('event.create')" :active="route().current('event.create')">Add</NavLink>
                             </div>
                         </div>
 
@@ -114,6 +115,10 @@ const showingNavigationDropdown = ref(false);
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink :href="route('event.create')" :active="route().current('event.create')">
+                            Add
                         </ResponsiveNavLink>
                     </div>
 

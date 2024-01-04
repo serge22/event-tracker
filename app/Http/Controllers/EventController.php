@@ -10,12 +10,14 @@ class EventController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         return inertia(
             'Event/Index',
             [
-                'events' => Event::all()
+                'events' => Event::where('user_id', $request->user()->id)
+                    ->take(10)
+                    ->get()
             ]
         );
     }

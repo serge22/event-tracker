@@ -14,14 +14,19 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id');
-            $table->unsignedInteger('label_id');
+            $table->string('comment');
             $table->timestamps();
         });
 
-        Schema::create('labels', function (Blueprint $table) {
+        Schema::create('tags', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id');
-            $table->string('label');
+            $table->string('name');
+        });
+
+        Schema::create('event_tag', function (Blueprint $table) {
+            $table->unsignedInteger('event_id');
+            $table->unsignedInteger('tag_id');
         });
     }
 
@@ -30,7 +35,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::drop('event_tag');
         Schema::drop('events');
-        Schema::drop('labels');
+        Schema::drop('tags');
     }
 };
