@@ -10,6 +10,10 @@ class Event extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'tags'
+    ];
+
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);

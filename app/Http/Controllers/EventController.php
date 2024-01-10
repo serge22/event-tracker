@@ -10,14 +10,14 @@ class EventController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
         return inertia(
             'Event/Index',
             [
-                'events' => Event::where('user_id', $request->user()->id)
+                'events' => Event::where('user_id', auth()->user()->id)
                     ->take(10)
-                    ->get()
+                    ->get()->load('tags')
             ]
         );
     }
@@ -35,11 +35,10 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        Event::create(
-            $request->validate([
-                'label' => 'required|integer|min:0|max:20',
-            ])
-        );
+        $request->validate([
+            'tags' => 'required|integer|min:0|max:20',
+        ]);
+//        Event::create();
         return to_route('event.index');
     }
 

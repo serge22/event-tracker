@@ -7,8 +7,9 @@ import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 
 const form = useForm({
-    label: null,
-    date: null,
+    tags: '',
+    date: '',
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 })
 </script>
 
@@ -22,20 +23,44 @@ const form = useForm({
                     <section class="max-w-xl">
                         <form @submit.prevent="form.post(route('event.store'))" class="mt-6 space-y-6">
                             <div>
-                                <InputLabel for="label" value="Name" />
+                                <InputLabel for="tags" value="Name" />
 
                                 <TextInput
-                                    id="label"
+                                    id="tags"
                                     type="text"
                                     class="mt-1 block w-full"
-                                    v-model="form.label"
+                                    v-model="form.tags"
                                     required
                                     autofocus
-                                    autocomplete="name"
                                 />
 
-                                <InputError class="mt-2" :message="form.errors.label" />
+                                <InputError class="mt-2" :message="form.errors.tags" />
                             </div>
+
+                            <div class="flex gap-3">
+                                <div class="grow">
+                                    <InputLabel for="date" value="Date" />
+
+                                    <TextInput
+                                        id="date"
+                                        type="text"
+                                        class="mt-1 block w-full"
+                                        v-model="form.date"
+                                    />
+                                </div>
+
+                                <div>
+                                    <InputLabel for="timezone" value="Timezone" />
+                                    <TextInput
+                                        id="timezone"
+                                        type="text"
+                                        class="mt-1"
+                                        v-model="form.timezone"
+                                        disabled
+                                    />
+                                </div>
+                            </div>
+                            <InputError class="mt-2" :message="form.errors.date" />
 
                             <div>
                                 <PrimaryButton>Create</PrimaryButton>
