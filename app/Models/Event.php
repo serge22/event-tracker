@@ -11,7 +11,9 @@ class Event extends Model
     use HasFactory;
 
     protected $fillable = [
-        'tags'
+        'user_id',
+        'comment',
+        'created_at',
     ];
 
     public function tags(): BelongsToMany

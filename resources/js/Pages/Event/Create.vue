@@ -7,6 +7,7 @@ import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import TagifyInput from "@/Components/TagifyInput.vue";
 
 const form = useForm({
     tags: '',
@@ -26,14 +27,7 @@ const form = useForm({
                             <div>
                                 <InputLabel for="tags" value="Name" />
 
-                                <TextInput
-                                    id="tags"
-                                    type="text"
-                                    class="mt-1 block w-full"
-                                    v-model="form.tags"
-                                    required
-                                    autofocus
-                                />
+                                <TagifyInput v-model="form.tags" class="mt-1 block w-full" />
 
                                 <InputError class="mt-2" :message="form.errors.tags" />
                             </div>

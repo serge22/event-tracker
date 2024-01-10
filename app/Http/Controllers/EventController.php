@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -15,7 +16,7 @@ class EventController extends Controller
         return inertia(
             'Event/Index',
             [
-                'events' => Event::where('user_id', auth()->user()->id)
+                'events' => Event::where('user_id', auth()->id())
                     ->take(10)
                     ->get()->load('tags')
             ]
@@ -35,10 +36,24 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'tags' => 'required|integer|min:0|max:20',
+        $tags = [];
+
+        foreach($request->input('tags') as $t) {
+            $tag = Tag::firstOrCreate(['user_id' => auth()->id(), 'name' => $t]);
+            $tags[] = $tag->id;
+        }
+
+//        $request->validate([
+//            'tags' => 'required|integer|min:0|max:20',
+//        ]);
+
+        $event = Event::create([
+            'user_id' => auth()->id(),
+            'created_at' => $request->date('date'),
         ]);
-//        Event::create();
+
+        $event->tags()->attach($tags);
+
         return to_route('event.index');
     }
 

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id');
-            $table->string('comment');
+            $table->string('comment')->nullable();
             $table->timestamps();
         });
 
@@ -22,11 +22,13 @@ return new class extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->string('name');
+            $table->unique(['user_id', 'name']);
         });
 
         Schema::create('event_tag', function (Blueprint $table) {
             $table->unsignedInteger('event_id');
             $table->unsignedInteger('tag_id');
+            $table->primary(['event_id', 'tag_id']);
         });
     }
 
