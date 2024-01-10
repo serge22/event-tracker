@@ -5,11 +5,12 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 const form = useForm({
     tags: '',
-    date: '',
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    date: new Date(),
 })
 </script>
 
@@ -37,30 +38,13 @@ const form = useForm({
                                 <InputError class="mt-2" :message="form.errors.tags" />
                             </div>
 
-                            <div class="flex gap-3">
-                                <div class="grow">
-                                    <InputLabel for="date" value="Date" />
+                            <div>
+                                <InputLabel for="date" value="Date" />
 
-                                    <TextInput
-                                        id="date"
-                                        type="text"
-                                        class="mt-1 block w-full"
-                                        v-model="form.date"
-                                    />
-                                </div>
+                                <VueDatePicker v-model="form.date" />
 
-                                <div>
-                                    <InputLabel for="timezone" value="Timezone" />
-                                    <TextInput
-                                        id="timezone"
-                                        type="text"
-                                        class="mt-1"
-                                        v-model="form.timezone"
-                                        disabled
-                                    />
-                                </div>
+                                <InputError class="mt-2" :message="form.errors.date" />
                             </div>
-                            <InputError class="mt-2" :message="form.errors.date" />
 
                             <div>
                                 <PrimaryButton>Create</PrimaryButton>
