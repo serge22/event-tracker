@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\OwnerScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -19,5 +20,14 @@ class Event extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new OwnerScope);
+
+        static::deleting(function(Event $event) {
+            $event->tags()->detach();
+        });
     }
 }

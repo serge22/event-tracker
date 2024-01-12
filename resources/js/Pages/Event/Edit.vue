@@ -8,10 +8,16 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import TagifyInput from "@/Components/TagifyInput.vue";
 
-const form = useForm({
-    tags: '',
-    date: new Date(),
+const props = defineProps({
+    event: Object,
 })
+
+const form = useForm({
+    tags: props.event.tags.map(tag => tag.name),
+    date: props.event.created_at,
+})
+
+console.log(props.event.tags)
 </script>
 
 <template>
@@ -22,7 +28,7 @@ const form = useForm({
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                     <section class="max-w-xl">
-                        <form @submit.prevent="form.post(route('event.store'))" class="mt-6 space-y-6">
+                        <form @submit.prevent="form.put(route('event.update', props.event.id))" class="mt-6 space-y-6">
                             <div>
                                 <InputLabel for="tags" value="Name" />
 

@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -16,9 +20,10 @@ class EventController extends Controller
         return inertia(
             'Event/Index',
             [
-                'events' => Event::where('user_id', auth()->id())
+                'events' => Event::query()
                     ->take(10)
-                    ->get()->load('tags')
+                    ->get()
+                    ->load('tags')
             ]
         );
     }
@@ -36,16 +41,16 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        $tags = [];
+        $request->validate([
+            'tags' => 'required',
+            'date' => 'required',
+        ]);
 
+        $tags = [];
         foreach($request->input('tags') as $t) {
             $tag = Tag::firstOrCreate(['user_id' => auth()->id(), 'name' => $t]);
             $tags[] = $tag->id;
         }
-
-//        $request->validate([
-//            'tags' => 'required|integer|min:0|max:20',
-//        ]);
 
         $event = Event::create([
             'user_id' => auth()->id(),
@@ -70,7 +75,9 @@ class EventController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $event = Event::findOrFail($id)->load('tags');
+
+        return inertia('Event/Edit', ['event' => $event]);
     }
 
     /**
@@ -78,7 +85,24 @@ class EventController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'tags' => 'required',
+            'date' => 'required',
+        ]);
+
+        $tags = [];
+        foreach($request->input('tags') as $t) {
+            $tag = Tag::firstOrCreate(['user_id' => auth()->id(), 'name' => $t]);
+            $tags[] = $tag->id;
+        }
+
+        $event = Event::findOrFail($id);
+        $event->created_at = $request->date('date');
+        $event->save();
+
+        $event->tags()->sync($tags);
+
+        return redirect()->route('event.index')->with('message', 'Event was changed!');
     }
 
     /**
@@ -86,6 +110,10 @@ class EventController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $event = Event::findOrFail($id);
+
+        $event->delete();
+
+        return to_route('event.index')->with('message', 'Deleted');
     }
 }

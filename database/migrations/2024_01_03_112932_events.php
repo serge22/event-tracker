@@ -29,6 +29,8 @@ return new class extends Migration
             $table->unsignedInteger('event_id');
             $table->unsignedInteger('tag_id');
             $table->primary(['event_id', 'tag_id']);
+            $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
+            $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
         });
     }
 
