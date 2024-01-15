@@ -24,7 +24,7 @@ const form = useForm({
                     <section class="max-w-xl">
                         <form @submit.prevent="form.post(route('event.store'))" class="mt-6 space-y-6">
                             <div>
-                                <InputLabel for="tags" value="Name" />
+                                <InputLabel for="tags" value="Tags" />
 
                                 <TagifyInput v-model="form.tags" class="mt-1 block w-full" />
 
