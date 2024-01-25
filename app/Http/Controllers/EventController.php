@@ -21,6 +21,7 @@ class EventController extends Controller
             'Event/Index',
             [
                 'events' => Event::query()
+                    ->orderByDesc('id')
                     ->take(10)
                     ->get()
                     ->load('tags')
