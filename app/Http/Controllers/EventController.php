@@ -17,16 +17,11 @@ class EventController extends Controller
      */
     public function index()
     {
-        return inertia(
-            'Event/Index',
-            [
-                'events' => Event::query()
-                    ->orderByDesc('id')
-                    ->take(10)
-                    ->get()
-                    ->load('tags')
-            ]
-        );
+        $events = Event::with('tags')
+            ->orderByDesc('created_at')
+            ->paginate(20);
+
+        return inertia('Event/Index', ['events' => $events]);
     }
 
     /**

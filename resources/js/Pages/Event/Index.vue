@@ -13,8 +13,8 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                     <section class="max-w-xl">
-                        <table v-if="events">
-                            <tr v-for="event in events" :key="event.id">
+                        <table v-if="events.data">
+                            <tr v-for="event in events.data" :key="event.id">
                                 <td>{{ dateFormat(event.created_at) }}</td>
                                 <td>{{ tagsFormat(event.tags) }}</td>
                                 <td>
@@ -23,6 +23,8 @@
                                 </td>
                             </tr>
                         </table>
+
+                        <Pagination :links="events.links" />
                     </section>
                 </div>
             </div>
@@ -34,6 +36,7 @@
 import {Head} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Link } from '@inertiajs/vue3'
+import Pagination from "@/Components/Pagination.vue";
 
 defineProps({
     events: Array,
