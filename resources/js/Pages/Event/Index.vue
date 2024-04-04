@@ -15,7 +15,7 @@
                     <section class="max-w-xl">
                         <table v-if="events.data">
                             <tr v-for="event in events.data" :key="event.id">
-                                <td>{{ dateFormat(event.created_at) }}</td>
+                                <td>{{ dayjs(event.created_at).format('HH:mm, D MMM') }}</td>
                                 <td>{{ tagsFormat(event.tags) }}</td>
                                 <td>
                                     <Link :href="route('event.edit', event.id)">Edit</Link>
@@ -37,15 +37,11 @@ import {Head} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Link } from '@inertiajs/vue3'
 import Pagination from "@/Components/Pagination.vue";
+import dayjs from 'dayjs';
 
 defineProps({
     events: Array,
 })
-
-function dateFormat(dateString) {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('default', {dateStyle: 'medium', timeStyle: 'medium'}).format(date);
-}
 
 function tagsFormat(tags) {
     let a = [];
