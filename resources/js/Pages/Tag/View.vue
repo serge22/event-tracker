@@ -15,7 +15,7 @@
                     <section class="max-w-xl">
                         <table v-if="events.data">
                             <tr v-for="event in events.data" :key="event.id">
-                                <td>{{ dayjs(event.created_at).format('D MMM, HH:mm') }}</td>
+                                <td>{{ format( parseISO( event.created_at), 'd MMM, H:mm' ) }}</td>
                                 <td>
                                     <Link :href="route('event.edit', event.id)">Edit</Link>
                                     <Link :href="route('event.destroy', event.id)" method="delete" as="button">Delete</Link>
@@ -36,7 +36,7 @@ import {Head} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Link } from '@inertiajs/vue3'
 import Pagination from "@/Components/Pagination.vue";
-import dayjs from 'dayjs';
+import {format, parseISO} from "date-fns";
 
 defineProps({
     events: Object,
