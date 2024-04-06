@@ -39,6 +39,6 @@ import Pagination from "@/Components/Pagination.vue";
 import dayjs from 'dayjs';
 
 defineProps({
-    events: Array,
+    events: Object,
 })
 </script>

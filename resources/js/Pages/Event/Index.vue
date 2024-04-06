@@ -40,7 +40,7 @@ import Pagination from "@/Components/Pagination.vue";
 import {format, parseISO} from "date-fns";
 
 defineProps({
-    events: Array,
+    events: Object,
 })
 
 function tagsFormat(tags) {
