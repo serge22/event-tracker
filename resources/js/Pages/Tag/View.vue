@@ -16,7 +16,6 @@
                         <table v-if="events.data">
                             <tr v-for="event in events.data" :key="event.id">
                                 <td>{{ dayjs(event.created_at).format('D MMM, HH:mm') }}</td>
-                                <td>{{ tagsFormat(event.tags) }}</td>
                                 <td>
                                     <Link :href="route('event.edit', event.id)">Edit</Link>
                                     <Link :href="route('event.destroy', event.id)" method="delete" as="button">Delete</Link>
@@ -42,10 +41,4 @@ import dayjs from 'dayjs';
 defineProps({
     events: Array,
 })
-
-function tagsFormat(tags) {
-    let a = [];
-    tags.forEach(tag => a.push(tag.name))
-    return a.join()
-}
 </script>
