@@ -19,7 +19,13 @@
                                 <td>{{ tagsFormat(event.tags) }}</td>
                                 <td>
                                     <Link :href="route('event.edit', event.id)">Edit</Link>
-                                    <Link :href="route('event.destroy', event.id)" method="delete" as="button">Delete</Link>
+                                    <Link
+                                        :href="route('event.destroy', event.id)"
+                                        method="delete"
+                                        as="button"
+                                        type="button"
+                                        :onBefore="() => confirm()"
+                                    >Delete</Link>
                                 </td>
                             </tr>
                         </table>
@@ -47,5 +53,9 @@ function tagsFormat(tags) {
     let a = [];
     tags.forEach(tag => a.push(tag.name))
     return a.join()
+}
+
+function confirm(){
+    return window.confirm("Are you sure?");
 }
 </script>
