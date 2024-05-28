@@ -29,7 +29,8 @@ class EventController extends Controller
      */
     public function create()
     {
-        return inertia('Event/Create');
+        $tags = Tag::select('name')->withCount(['events'])->orderByDesc("events_count")->paginate(5)->pluck('name');
+        return inertia('Event/Create', ['tags' => $tags]);
     }
 
     /**
@@ -111,5 +112,19 @@ class EventController extends Controller
         $event->delete();
 
         return to_route('event.index')->with('message', 'Deleted');
+    }
+
+    /**
+     * Restore soft-deleted model
+     * @param string $id
+     */
+    public function restore(string $id) {
+        $event = Event::withTrashed()->findOrFail($id);
+
+        if ($event->trashed()) {
+            $event->restore();
+        }
+
+        return to_route('event.index');
     }
 }

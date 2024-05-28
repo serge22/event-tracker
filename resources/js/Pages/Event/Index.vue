@@ -2,52 +2,90 @@
     <Head title="Events" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="inline-block font-semibold text-xl text-gray-800 leading-tight pr-3">Events</h2>
-            <Link :href="route('event.create')" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">New Event</Link>
+        <template v-slot:app-bar-title>Events</template>
+        <template v-slot:app-bar-append>
+            <v-btn
+                :icon="mdiPlus"
+                :to="route('event.create')"></v-btn>
         </template>
+<!--
+        <v-container v-if="$page.props.flash.message" fluid>
+            <v-alert type="info" :text="$page.props.flash.message" closable></v-alert>
+        </v-container>
+-->
+        <v-list v-if="events.data" lines="two">
+            <v-list-item
+                v-for="event in events.data"
+                :key="event.id"
+                :title="tagsFormat(event.tags)"
+                :subtitle="dayjs(event.created_at).format('D MMM, H:mm')"
+            >
+                <template v-slot:append>
+                    <v-btn icon variant="flat" :href="route('event.edit', event.id)">
+                        <v-icon :icon="mdiPencil"></v-icon>
+                        <v-tooltip activator="parent" location="bottom">Edit</v-tooltip>
+                    </v-btn>
 
-        <div v-if="$page.props.flash.message">{{ $page.props.flash.message }}</div>
+                    <v-btn icon variant="flat" @click="deleteEvent(event.id)">
+                        <v-icon :icon="mdiDelete"></v-icon>
+                        <v-tooltip activator="parent" location="bottom">Delete</v-tooltip>
+                    </v-btn>
+                </template>
+            </v-list-item>
+        </v-list>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <section class="max-w-xl">
-                        <table v-if="events.data">
-                            <tr v-for="event in events.data" :key="event.id">
-                                <td>{{ format( parseISO( event.created_at), 'd MMM, H:mm' ) }}</td>
-                                <td>{{ tagsFormat(event.tags) }}</td>
-                                <td>
-                                    <Link :href="route('event.edit', event.id)">Edit</Link>
-                                    <Link
-                                        :href="route('event.destroy', event.id)"
-                                        method="delete"
-                                        as="button"
-                                        type="button"
-                                        :onBefore="() => confirm()"
-                                    >Delete</Link>
-                                </td>
-                            </tr>
-                        </table>
+        <v-pagination
+            v-model="currentPage"
+            :length="events.last_page"
+        ></v-pagination>
 
-                        <Pagination :links="events.links" />
-                    </section>
-                </div>
-            </div>
-        </div>
+        <v-snackbar v-model="snackbarDelete">
+            Event moved to Trash.
+
+            <template v-slot:actions>
+                <v-btn
+                    color="info"
+                    @click="deleteUndo"
+                >
+                    Undo
+                </v-btn>
+                <v-btn
+                    icon
+                    @click="snackbarDelete = false"
+                >
+                    <v-icon :icon="mdiClose"></v-icon>
+                </v-btn>
+            </template>
+        </v-snackbar>
+
+        <v-snackbar v-model="snackbarUndone">
+            Action undone.
+
+            <template v-slot:actions>
+                <v-btn icon @click="snackbarUndone = false">
+                    <v-icon :icon="mdiClose"></v-icon>
+                </v-btn>
+            </template>
+        </v-snackbar>
+
     </AuthenticatedLayout>
 </template>
 
 <script setup>
-import {Head} from "@inertiajs/vue3";
+import {Head, router} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Link } from '@inertiajs/vue3'
-import Pagination from "@/Components/Pagination.vue";
-import {format, parseISO} from "date-fns";
+import {mdiClose, mdiDelete, mdiPencil, mdiPlus} from '@mdi/js'
+import dayjs from "dayjs";
+import {ref, watch} from "vue";
 
-defineProps({
+const props = defineProps({
     events: Object,
 })
+
+const currentPage = ref(props.events.current_page);
+const snackbarDelete = ref(false);
+const snackbarUndone = ref(false);
+const lastRemoved = ref(0);
 
 function tagsFormat(tags) {
     let a = [];
@@ -55,7 +93,20 @@ function tagsFormat(tags) {
     return a.join()
 }
 
-function confirm(){
-    return window.confirm("Are you sure?");
+watch(currentPage, (val) => {
+    router.get(props.events.links[val].url)
+})
+
+function deleteEvent(eventId) {
+    snackbarDelete.value = true;
+    lastRemoved.value = eventId;
+    router.delete(route('event.destroy', eventId));
+    // router.delete(route('event.destroy', eventId), { preserveState: true });
+}
+
+function deleteUndo() {
+    snackbarDelete.value = false;
+    snackbarUndone.value = true;
+    router.put(route('event.restore', lastRemoved.value));
 }
 </script>

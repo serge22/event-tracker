@@ -7,16 +7,19 @@
     },
     "devDependencies": {
         "@inertiajs/vue3": "^1.0.15",
-        "@tailwindcss/forms": "^0.5.3",
+        "@mdi/js": "^7.4.47",
         "@vitejs/plugin-vue": "^5.0.4",
-        "@vuepic/vue-datepicker": "^8.3.2",
-        "@yaireo/tagify": "^4.22.2",
         "autoprefixer": "^10.4.19",
         "axios": "^1.6.8",
         "laravel-vite-plugin": "^1.0.2",
         "postcss": "^8.4.38",
-        "tailwindcss": "^3.4.3",
         "vite": "^5.2.8",
         "vue": "^3.4.21"
+    },
+    "dependencies": {
+        "dayjs": "^1.11.11",
+        "vite-plugin-vuetify": "^2.0.3",
+        "vuetify": "^3.6.5",
+        "vuetify-inertia-link": "^1.0.7"
     }
 }

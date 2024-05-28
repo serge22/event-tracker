@@ -29,4 +29,6 @@ Route::middleware('auth')->group(function () {
 Route::resource('event', EventController::class);
 Route::resource('tag', TagController::class);
 
+Route::put("event/{event}/restore", array(EventController::class, 'restore'))->name('event.restore');
+
 require __DIR__.'/auth.php';

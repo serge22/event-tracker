@@ -28,8 +28,8 @@ class Event extends Model
     {
         static::addGlobalScope(new OwnerScope);
 
-        static::deleting(function(Event $event) {
-            $event->tags()->detach();
-        });
+//        static::deleting(function(Event $event) {
+//            $event->tags()->detach();
+//        });
     }
 }

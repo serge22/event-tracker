@@ -2,12 +2,21 @@
     <Head title="Tags" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="inline-block font-semibold text-xl text-gray-800 leading-tight pr-3">Tags</h2>
-        </template>
+        <template v-slot:app-bar-title>Tags</template>
 
         <div v-if="$page.props.flash.message">{{ $page.props.flash.message }}</div>
 
+        <v-list v-if="tags.data">
+            <v-list-item
+                v-for="tag in tags.data"
+                :key="tag.id"
+                :to="route('tag.show', tag.id)"
+            >
+                {{ tag.name }}
+                <v-chip size="x-small">{{ tag.events_count }}</v-chip>
+            </v-list-item>
+        </v-list>
+<!--
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
@@ -28,14 +37,15 @@
                 </div>
             </div>
         </div>
+-->
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import {Head} from "@inertiajs/vue3";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Link } from '@inertiajs/vue3'
-import Pagination from "@/Components/Pagination.vue";
+
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 
 defineProps({
     tags: Object,

@@ -27,6 +27,14 @@ const submit = () => {
         onFinish: () => form.reset('password'),
     });
 };
+
+const rules = {
+    required: value => !!value || 'Required.',
+    email: value => {
+        const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        return pattern.test(value) || 'Invalid e-mail.'
+    },
+}
 </script>
 
 <template>
@@ -37,7 +45,44 @@ const submit = () => {
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit">
+        <v-container class="fill-height">
+            <v-row align="center" justify="center">
+                <v-col>
+                    <v-card
+                        class="mx-auto"
+                        max-width="344"
+                        title="User Login"
+                    >
+                        <v-container>
+                            <v-form @submit.prevent="submit">
+                                <v-text-field
+                                    v-model="form.email"
+                                    type="email"
+                                    label="Email"
+                                    :error-messages="form.errors.email"
+                                    :rules="[rules.required, rules.email]"
+                                ></v-text-field>
+
+                                <v-text-field
+                                    v-model="form.password"
+                                    type="password"
+                                    label="Password"
+                                    :error-messages="form.errors.password"
+                                    :rules="[rules.required]"
+                                ></v-text-field>
+
+                                <v-checkbox v-model="form.remember" label="Remember me"></v-checkbox>
+
+                                <v-btn class="mt-2" type="submit" :disabled="form.processing" block>Log in</v-btn>
+                            </v-form>
+                        </v-container>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-container>
+
+
+<!--
             <div>
                 <InputLabel for="email" value="Email" />
 
@@ -89,6 +134,7 @@ const submit = () => {
                     Log in
                 </PrimaryButton>
             </div>
-        </form>
+            -->
+
     </GuestLayout>
 </template>
