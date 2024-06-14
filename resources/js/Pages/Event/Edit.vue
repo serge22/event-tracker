@@ -1,12 +1,8 @@
 <script setup>
 import {Head, useForm} from '@inertiajs/vue3'
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import InputLabel from "@/Components/InputLabel.vue";
-import InputError from "@/Components/InputError.vue";
-import VueDatePicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css'
-import TagifyInput from "@/Components/TagifyInput.vue";
+import DateTimePicker from "@/Components/DateTimePicker.vue";
+import {mdiCalendar} from "@mdi/js";
 
 const props = defineProps({
     event: Object,
@@ -21,37 +17,38 @@ console.log(props.event.tags)
 </script>
 
 <template>
-    <Head title="Add event" />
+    <Head title="Edit event" />
 
     <AuthenticatedLayout>
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <section class="max-w-xl">
-                        <form @submit.prevent="form.put(route('event.update', props.event.id))" class="mt-6 space-y-6">
-                            <div>
-                                <InputLabel for="tags" value="Tags" />
+        <template v-slot:app-bar-title>Edit Event</template>
 
-                                <TagifyInput v-model="form.tags" class="mt-1 block w-full" />
+        <v-container fluid>
+            <v-form validate-on="submit lazy" @submit.prevent="form.put(route('event.update', props.event.id))">
 
-                                <InputError class="mt-2" :message="form.errors.tags" />
-                            </div>
+                <v-combobox
+                    label="Tags"
+                    v-model="form.tags"
+                    :items="tags"
+                    :error-messages="form.errors.tags"
+                    chips
+                    closable-chips
+                    multiple
+                    hide-selected
+                ></v-combobox>
 
-                            <div>
-                                <InputLabel for="date" value="Date" />
+                <DateTimePicker
+                    label="Date"
+                    v-model="form.date"
+                    :error-messages="form.errors.date"
+                    :append-inner-icon="mdiCalendar"
+                ></DateTimePicker>
 
-                                <VueDatePicker v-model="form.date" />
-
-                                <InputError class="mt-2" :message="form.errors.date" />
-                            </div>
-
-                            <div>
-                                <PrimaryButton>Save</PrimaryButton>
-                            </div>
-                        </form>
-                    </section>
-                </div>
-            </div>
-        </div>
+                <v-btn
+                    :loading="form.processing"
+                    text="Save"
+                    type="submit"
+                ></v-btn>
+            </v-form>
+        </v-container>
     </AuthenticatedLayout>
 </template>
