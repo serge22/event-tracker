@@ -73,8 +73,9 @@ class EventController extends Controller
     public function edit(string $id)
     {
         $event = Event::findOrFail($id)->load('tags');
+        $tags = Tag::select('name')->withCount(['events'])->orderByDesc("events_count")->paginate(5)->pluck('name');
 
-        return inertia('Event/Edit', ['event' => $event]);
+        return inertia('Event/Edit', ['event' => $event, 'tags' => $tags]);
     }
 
     /**

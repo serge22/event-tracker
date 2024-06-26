@@ -6,6 +6,7 @@ import {mdiCalendar} from "@mdi/js";
 
 const props = defineProps({
     event: Object,
+    tags: Array,
 })
 
 const form = useForm({
