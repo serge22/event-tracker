@@ -94,7 +94,8 @@ function tagsFormat(tags) {
 }
 
 watch(currentPage, (val) => {
-    router.get(props.events.links[val].url)
+    const link = 1 === val ? route('event.index') : route('event.index', {page: val});
+    router.get( link );
 })
 
 function deleteEvent(eventId) {
