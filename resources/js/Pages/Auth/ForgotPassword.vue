@@ -1,10 +1,6 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import {Head, useForm} from '@inertiajs/vue3';
 
 defineProps({
     status: {
@@ -19,43 +15,54 @@ const form = useForm({
 const submit = () => {
     form.post(route('password.email'));
 };
+
+const rules = {
+    required: value => !!value || 'Required.',
+    email: value => {
+        const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        return pattern.test(value) || 'Invalid e-mail.'
+    },
+}
 </script>
 
 <template>
     <GuestLayout>
         <Head title="Forgot Password" />
 
-        <div class="mb-4 text-sm text-gray-600">
-            Forgot your password? No problem. Just let us know your email address and we will email you a password reset
-            link that will allow you to choose a new one.
-        </div>
+        <v-container class="fill-height">
+            <v-row align="center" justify="center">
+                <v-col>
+                    <v-card
+                        class="mx-auto"
+                        max-width="344"
+                        title="Forgot Password"
+                    >
+                        <v-container>
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
-        </div>
+                            <v-alert v-if="status" :text="status" type="success"></v-alert>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
+                            <div class="mb-4 text-sm text-gray-600">
+                                Forgot your password? No problem. Just let us know your email address and we will email you a password reset
+                                link that will allow you to choose a new one.
+                            </div>
 
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
+                            <v-form @submit.prevent="submit">
+                                <v-text-field
+                                    v-model="form.email"
+                                    type="email"
+                                    label="Email"
+                                    :error-messages="form.errors.email"
+                                    :rules="[rules.required, rules.email]"
+                                ></v-text-field>
 
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
+                                <v-btn class="mt-2" type="submit" :disabled="form.processing" block>Email Password Reset Link</v-btn>
 
-            <div class="flex items-center justify-end mt-4">
-                <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Email Password Reset Link
-                </PrimaryButton>
-            </div>
-        </form>
+                            </v-form>
+                        </v-container>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-container>
+
     </GuestLayout>
 </template>
